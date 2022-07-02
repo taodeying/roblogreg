@@ -3,4 +3,214 @@
 
 .. py:module:: roblogreg.roblogreg
 
+.. autoapi-nested-parse::
+
+   Robust Multinomial Regression
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   roblogreg.roblogreg.LogitProb
+   roblogreg.roblogreg.MMR
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   roblogreg.roblogreg.logpdf_multinom
+   roblogreg.roblogreg.rho
+   roblogreg.roblogreg.phi
+   roblogreg.roblogreg.G
+   roblogreg.roblogreg.loss_by
+
+
+
+.. py:class:: LogitProb(x_ncol: int, n_class: int)
+
+   Bases: :py:obj:`torch.nn.Module`
+
+   Return de log probability
+
+   LogitProb is probability of each class in logit scale.     It takes the input x and returns the output LogitProb,     pading the last column with 0. the last column serves as     the base-category:     LogitProb = pad(input * theta, [0, 1, 0, 0])
+
+   :param x_ncol: the number of columns of the input x
+   :type x_ncol: int
+   :param n_class: the number of classes
+   :type n_class: int
+
+   .. attribute:: theta
+
+      The matrix theta. Is multinomial glm parameter,             whose dimension is [x_ncol, n_class-1].
+
+   Examples::
+       >>> x_input = torch.randn(10, 5)
+       >>> LogitProb = LogitProb(5, 2)
+       >>> output = LogitProb(x_input)
+       >>> print(output.size())
+       torch.Size([10, 3])
+
+   .. py:method:: forward(self, x_input: torch.Tensor)
+
+      forward
+
+      returns the Logit Probability for each of the clases.
+
+      :param x_input: The X.                 First column should be a 1 column
+      :type x_input: torch.Tensor
+
+      :returns: LogitProb[x_nrow, n_class], where                 the last column serves as the base-category.
+      :rtype: torch.Tensor
+
+
+
+.. py:function:: logpdf_multinom(y_input: torch.Tensor, logits: torch.Tensor, w_x: torch.Tensor) -> torch.Tensor
+
+   logpdf_multinom Log pdf of the multinomial
+
+   Log pdf of the multinomial
+
+   :param y_input: a tensor that contains the clases. It takes values from [0:n_clases-1]
+   :type y_input: torch.Tensor
+   :param logits: logit probability
+   :type logits: torch.Tensor
+   :param w_x: MCD weight . Not used
+   :type w_x: torch.Tensor
+
+   :returns: Log pdf of the multinomial
+   :rtype: torch.Tensor
+
+
+.. py:function:: rho(x: torch.Tensor, d=0.5) -> torch.Tensor
+
+   rho BY rho function
+
+   Bianco-Yohai rho robust function for multinomial logit. Croux y Haesbroeck type
+
+   :param x: logit probability
+   :type x: torch.Tensor
+   :param d: robustness hyperparameter. Defaults to 0.5.
+   :type d: float, optional
+
+   :returns: rho(-log(pi_ij))
+   :rtype: torch.Tensor
+
+
+.. py:function:: phi(y: torch.Tensor) -> torch.Tensor
+
+   phi phi function
+
+   calculates the cdf values of a normal variable
+
+   :param y_input: imput value
+   :type y_input: torch.Tensor
+
+   :returns: normal_cdf(X)
+   :rtype: torch.Tensor
+
+
+.. py:function:: G(x: torch.Tensor, d=0.5) -> torch.Tensor
+
+   G correction term
+
+   Correction term to get a fisher consisten estimator. Croux y Haesbroeck type
+
+   :param x: _description_
+   :type x: torch.Tensor
+   :param d: _description_. Defaults to 0.5.
+   :type d: float, optional
+
+   :returns: _description_
+   :rtype: torch.Tensor
+
+
+.. py:function:: loss_by(y_input: torch.Tensor, logits: torch.Tensor, w_x: torch.Tensor) -> torch.Tensor
+
+   loss_by BY loss
+
+   BY loss in the form of Croux y Haesbroeck
+
+   :param y_input: a tensor that contains the clases.              It takes values from [0:n_clases-1]
+   :type y_input: torch.Tensor
+   :param logits: logit probability
+   :type logits: torch.Tensor
+   :param w_x: MCD weight
+   :type w_x: torch.Tensor
+
+   :returns: BY loss for the sample.
+   :rtype: torch.Tensor
+
+
+.. py:class:: MMR(x_input: torch.Tensor, y_input: torch.Tensor, x_ncol: int, n_class: int, learning_rate: float = 0.01, model_type: str = 'BY')
+
+   Multinomial Multivariate Regresion
+
+   Initializates a Multinomial Multivariate Regresion class.         It can be a robust version (model_type="BY"), or a clasical        one, based on maximum likelihood
+
+   :param x_input: The X.                 First column should be a 1 column
+   :type x_input: torch.Tensor
+   :param y_input: a tensor that contains the clases.                 It takes values from [0:n_clases-1]
+   :type y_input: torch.Tensor
+   :param x_ncol: the number of columns of the input x
+   :type x_ncol: int
+   :param n_class: the number of classes
+   :type n_class: int
+   :param learning_rate: Learning Rate por AdaMax. Defaults to 1e-2.
+   :type learning_rate: float, optional
+   :param model_type: BY for robust, ML for maximum likelihood.             Defaults to "BY".
+   :type model_type: str, optional
+
+   .. attribute:: optimizer
+
+      torch.optim.Adamax
+
+   .. attribute:: w_x
+
+      Hubber Weights on X, Minimum Covariance Determinant
+
+   .. py:method:: train(self, epochs: int = 100)
+
+      train trains the model
+
+      Trains the model using Adamax
+
+      :param epochs: number of epochs in the training loop.                  Defaults to 100.
+      :type epochs: int, optional
+
+
+   .. py:method:: predict(self, x_input: torch.Tensor, pred_type: str = 'prob') -> torch.Tensor
+
+      predict Prediction for mmr
+
+      Prediction for multivariate multinomial regression. The option             "prob" returns the probability of each class. The option             "logit" returns the logit of the probability of each class.
+          The option "class" returns the most probable class.
+
+      :param x_input: The X.                 First column should be a 1 column
+      :type x_input: torch.Tensor
+      :param pred_type: prediction type                 ("prob", "logit", "class"). Defaults to "prob".
+      :type pred_type: str, optional
+
+      :returns: a tensor with the prediction
+      :rtype: torch.Tensor
+
+
+   .. py:method:: get_theta(self) -> torch.Tensor
+
+      get_theta Returns Theta
+
+      Returns Theta, the parameters of the glm multinomial logit
+
+      :returns: a matrix with the parameters
+      :rtype: torch.Tensor
+
+
 

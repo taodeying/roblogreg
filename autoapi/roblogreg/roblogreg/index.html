@@ -91,6 +91,289 @@
              
   <section id="module-roblogreg.roblogreg">
 <span id="roblogreg-roblogreg"></span><h1><a class="reference internal" href="#module-roblogreg.roblogreg" title="roblogreg.roblogreg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">roblogreg.roblogreg</span></code></a><a class="headerlink" href="#module-roblogreg.roblogreg" title="Permalink to this heading"></a></h1>
+<p>Robust Multinomial Regression</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#roblogreg.roblogreg.LogitProb" title="roblogreg.roblogreg.LogitProb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LogitProb</span></code></a></p></td>
+<td><p>Return de log probability</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#roblogreg.roblogreg.MMR" title="roblogreg.roblogreg.MMR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MMR</span></code></a></p></td>
+<td><p>Multinomial Multivariate Regresion</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#roblogreg.roblogreg.logpdf_multinom" title="roblogreg.roblogreg.logpdf_multinom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logpdf_multinom</span></code></a>(y_input: torch.Tensor, logits: torch.Tensor, w_x: torch.Tensor) → torch.Tensor</p></td>
+<td><p>logpdf_multinom Log pdf of the multinomial</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#roblogreg.roblogreg.rho" title="roblogreg.roblogreg.rho"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rho</span></code></a>(x: torch.Tensor, d=0.5) → torch.Tensor</p></td>
+<td><p>rho BY rho function</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#roblogreg.roblogreg.phi" title="roblogreg.roblogreg.phi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phi</span></code></a>(y: torch.Tensor) → torch.Tensor</p></td>
+<td><p>phi phi function</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#roblogreg.roblogreg.G" title="roblogreg.roblogreg.G"><code class="xref py py-obj docutils literal notranslate"><span class="pre">G</span></code></a>(x: torch.Tensor, d=0.5) → torch.Tensor</p></td>
+<td><p>G correction term</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#roblogreg.roblogreg.loss_by" title="roblogreg.roblogreg.loss_by"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loss_by</span></code></a>(y_input: torch.Tensor, logits: torch.Tensor, w_x: torch.Tensor) → torch.Tensor</p></td>
+<td><p>loss_by BY loss</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.LogitProb">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">roblogreg.roblogreg.</span></span><span class="sig-name descname"><span class="pre">LogitProb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_ncol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#roblogreg.roblogreg.LogitProb" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.nn.Module</span></code></p>
+<p>Return de log probability</p>
+<p>LogitProb is probability of each class in logit scale.     It takes the input x and returns the output LogitProb,     pading the last column with 0. the last column serves as     the base-category:     LogitProb = pad(input * theta, [0, 1, 0, 0])</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_ncol</strong> (<em>int</em>) – the number of columns of the input x</p></li>
+<li><p><strong>n_class</strong> (<em>int</em>) – the number of classes</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.LogitProb.theta">
+<span class="sig-name descname"><span class="pre">theta</span></span><a class="headerlink" href="#roblogreg.roblogreg.LogitProb.theta" title="Permalink to this definition"></a></dt>
+<dd><p>The matrix theta. Is multinomial glm parameter,             whose dimension is [x_ncol, n_class-1].</p>
+</dd></dl>
+
+<dl>
+<dt>Examples::</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">LogitProb</span> <span class="o">=</span> <span class="n">LogitProb</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">LogitProb</span><span class="p">(</span><span class="n">x_input</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+<span class="go">torch.Size([10, 3])</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.LogitProb.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#roblogreg.roblogreg.LogitProb.forward" title="Permalink to this definition"></a></dt>
+<dd><p>forward</p>
+<p>returns the Logit Probability for each of the clases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x_input</strong> (<em>torch.Tensor</em>) – The X.                 First column should be a 1 column</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>LogitProb[x_nrow, n_class], where                 the last column serves as the base-category.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.logpdf_multinom">
+<span class="sig-prename descclassname"><span class="pre">roblogreg.roblogreg.</span></span><span class="sig-name descname"><span class="pre">logpdf_multinom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="headerlink" href="#roblogreg.roblogreg.logpdf_multinom" title="Permalink to this definition"></a></dt>
+<dd><p>logpdf_multinom Log pdf of the multinomial</p>
+<p>Log pdf of the multinomial</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_input</strong> (<em>torch.Tensor</em>) – a tensor that contains the clases. It takes values from [0:n_clases-1]</p></li>
+<li><p><strong>logits</strong> (<em>torch.Tensor</em>) – logit probability</p></li>
+<li><p><strong>w_x</strong> (<em>torch.Tensor</em>) – MCD weight . Not used</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Log pdf of the multinomial</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.rho">
+<span class="sig-prename descclassname"><span class="pre">roblogreg.roblogreg.</span></span><span class="sig-name descname"><span class="pre">rho</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="headerlink" href="#roblogreg.roblogreg.rho" title="Permalink to this definition"></a></dt>
+<dd><p>rho BY rho function</p>
+<p>Bianco-Yohai rho robust function for multinomial logit. Croux y Haesbroeck type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>torch.Tensor</em>) – logit probability</p></li>
+<li><p><strong>d</strong> (<em>float</em><em>, </em><em>optional</em>) – robustness hyperparameter. Defaults to 0.5.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>rho(-log(pi_ij))</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.phi">
+<span class="sig-prename descclassname"><span class="pre">roblogreg.roblogreg.</span></span><span class="sig-name descname"><span class="pre">phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="headerlink" href="#roblogreg.roblogreg.phi" title="Permalink to this definition"></a></dt>
+<dd><p>phi phi function</p>
+<p>calculates the cdf values of a normal variable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>y_input</strong> (<em>torch.Tensor</em>) – imput value</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>normal_cdf(X)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.G">
+<span class="sig-prename descclassname"><span class="pre">roblogreg.roblogreg.</span></span><span class="sig-name descname"><span class="pre">G</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="headerlink" href="#roblogreg.roblogreg.G" title="Permalink to this definition"></a></dt>
+<dd><p>G correction term</p>
+<p>Correction term to get a fisher consisten estimator. Croux y Haesbroeck type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>torch.Tensor</em>) – _description_</p></li>
+<li><p><strong>d</strong> (<em>float</em><em>, </em><em>optional</em>) – _description_. Defaults to 0.5.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.loss_by">
+<span class="sig-prename descclassname"><span class="pre">roblogreg.roblogreg.</span></span><span class="sig-name descname"><span class="pre">loss_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="headerlink" href="#roblogreg.roblogreg.loss_by" title="Permalink to this definition"></a></dt>
+<dd><p>loss_by BY loss</p>
+<p>BY loss in the form of Croux y Haesbroeck</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_input</strong> (<em>torch.Tensor</em>) – a tensor that contains the clases.              It takes values from [0:n_clases-1]</p></li>
+<li><p><strong>logits</strong> (<em>torch.Tensor</em>) – logit probability</p></li>
+<li><p><strong>w_x</strong> (<em>torch.Tensor</em>) – MCD weight</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>BY loss for the sample.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.MMR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">roblogreg.roblogreg.</span></span><span class="sig-name descname"><span class="pre">MMR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_ncol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'BY'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#roblogreg.roblogreg.MMR" title="Permalink to this definition"></a></dt>
+<dd><p>Multinomial Multivariate Regresion</p>
+<p>Initializates a Multinomial Multivariate Regresion class.         It can be a robust version (model_type=”BY”), or a clasical        one, based on maximum likelihood</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_input</strong> (<em>torch.Tensor</em>) – The X.                 First column should be a 1 column</p></li>
+<li><p><strong>y_input</strong> (<em>torch.Tensor</em>) – a tensor that contains the clases.                 It takes values from [0:n_clases-1]</p></li>
+<li><p><strong>x_ncol</strong> (<em>int</em>) – the number of columns of the input x</p></li>
+<li><p><strong>n_class</strong> (<em>int</em>) – the number of classes</p></li>
+<li><p><strong>learning_rate</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning Rate por AdaMax. Defaults to 1e-2.</p></li>
+<li><p><strong>model_type</strong> (<em>str</em><em>, </em><em>optional</em>) – BY for robust, ML for maximum likelihood.             Defaults to “BY”.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.MMR.optimizer">
+<span class="sig-name descname"><span class="pre">optimizer</span></span><a class="headerlink" href="#roblogreg.roblogreg.MMR.optimizer" title="Permalink to this definition"></a></dt>
+<dd><p>torch.optim.Adamax</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.MMR.w_x">
+<span class="sig-name descname"><span class="pre">w_x</span></span><a class="headerlink" href="#roblogreg.roblogreg.MMR.w_x" title="Permalink to this definition"></a></dt>
+<dd><p>Hubber Weights on X, Minimum Covariance Determinant</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.MMR.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#roblogreg.roblogreg.MMR.train" title="Permalink to this definition"></a></dt>
+<dd><p>train trains the model</p>
+<p>Trains the model using Adamax</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epochs</strong> (<em>int</em><em>, </em><em>optional</em>) – number of epochs in the training loop.                  Defaults to 100.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.MMR.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'prob'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="headerlink" href="#roblogreg.roblogreg.MMR.predict" title="Permalink to this definition"></a></dt>
+<dd><p>predict Prediction for mmr</p>
+<dl class="simple">
+<dt>Prediction for multivariate multinomial regression. The option             “prob” returns the probability of each class. The option             “logit” returns the logit of the probability of each class.</dt><dd><p>The option “class” returns the most probable class.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_input</strong> (<em>torch.Tensor</em>) – The X.                 First column should be a 1 column</p></li>
+<li><p><strong>pred_type</strong> (<em>str</em><em>, </em><em>optional</em>) – prediction type                 (“prob”, “logit”, “class”). Defaults to “prob”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a tensor with the prediction</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="roblogreg.roblogreg.MMR.get_theta">
+<span class="sig-name descname"><span class="pre">get_theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="headerlink" href="#roblogreg.roblogreg.MMR.get_theta" title="Permalink to this definition"></a></dt>
+<dd><p>get_theta Returns Theta</p>
+<p>Returns Theta, the parameters of the glm multinomial logit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a matrix with the parameters</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
 </section>
 
 
