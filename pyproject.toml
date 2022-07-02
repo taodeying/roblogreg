@@ -19,6 +19,8 @@ sphinx-autoapi = "^1.8.4"
 sphinx-rtd-theme = "^1.0.0"
 ghp-import = "^2.1.0"
 python-semantic-release = "^7.29.4"
+black = "^22.6.0"
+pylint = "^2.14.4"
 
 [tool.semantic_release]
 version_variable = "pyproject.toml:version" # version location
