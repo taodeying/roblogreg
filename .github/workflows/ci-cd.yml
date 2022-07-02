@@ -9,10 +9,10 @@ jobs:
 
     # Define job steps
     steps:
-    - name: Set up Python 3.9
+    - name: Set up Python 3.10
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: 3.10
 
     - name: Check-out repository
       uses: actions/checkout@v2
@@ -46,10 +46,10 @@ jobs:
 
     # Define job steps
     steps:
-    - name: Set up Python 3.9
+    - name: Set up Python 3.10
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: 3.10
 
     - name: Check-out repository
       uses: actions/checkout@v2
@@ -71,22 +71,28 @@ jobs:
           git config user.email github-actions@github.com
           poetry run semantic-release publish
 
-    - name: Publish to TestPyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
+    - name: Use gh-pages to build Doc
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        user: __token__
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        repository_url: https://test.pypi.org/legacy/
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/_build/html
 
-    - name: Test install from TestPyPI
-      run: |
-          pip install \
-          --index-url https://test.pypi.org/simple/ \
-          --extra-index-url https://pypi.org/simple \
-          roblogreg
+    #- name: Publish to TestPyPI
+    #  uses: pypa/gh-action-pypi-publish@release/v1
+    #  with:
+    #    user: __token__
+    #    password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+    #    repository_url: https://test.pypi.org/legacy/
 
-    - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
+    #- name: Test install from TestPyPI
+    #  run: |
+    #      pip install \
+    #      --index-url https://test.pypi.org/simple/ \
+    #      --extra-index-url https://pypi.org/simple \
+    #      roblogreg
+
+    #- name: Publish to PyPI
+    #  uses: pypa/gh-action-pypi-publish@release/v1
+    #  with:
+    #    user: __token__
+    #    password: ${{ secrets.PYPI_API_TOKEN }}
