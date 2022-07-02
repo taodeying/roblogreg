@@ -1,0 +1,23 @@
+:py:mod:`roblogreg`
+===================
+
+.. py:module:: roblogreg
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   roblogreg/index.rst
+
+
+Package Contents
+----------------
+
+.. py:data:: __version__
+   
+
+   
+
